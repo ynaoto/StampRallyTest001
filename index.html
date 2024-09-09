@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QRコードリーダーと現在地取得</title>
+    <title>QRコードリーダーと現在地取得2</title>
     <style>
         #video {
-            width: 640px;
-            height: 480px;
+            width: 100%;
+            height: auto;
         }
         canvas {
             display: none;
@@ -16,7 +16,7 @@
 </head>
 <body>
     <h1>WebカメラでQRコードをスキャン & 現在地取得</h1>
-    <video id="video" autoplay></video>
+    <video id="video" autoplay playsinline></video>
     <canvas id="canvas" width="640" height="480"></canvas>
     <p id="output">QRコードがここに表示されます</p>
     <p id="location">現在地：取得中...</p>
