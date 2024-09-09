@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QRコードリーダーと外カメラ</title>
+    <title>QRコードリーダーと位置情報</title>
     <style>
         #video {
             width: 100%;
@@ -15,10 +15,11 @@
     </style>
 </head>
 <body>
-    <h1>外カメラでQRコードをスキャン</h1>
+    <h1>外カメラでQRコードをスキャン & 現在地取得</h1>
     <video id="video" autoplay playsinline muted></video>
     <canvas id="canvas" width="640" height="480"></canvas>
     <p id="output">QRコードの内容がここに表示されます</p>
+    <p id="location">現在地：取得中...</p>
 
     <!-- jsQRライブラリをCDNから読み込む -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
@@ -27,7 +28,9 @@
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const output = document.getElementById('output');
+        const locationOutput = document.getElementById('location');
         const ctx = canvas.getContext('2d');
+        let currentLocation = null;
 
         // 背面カメラを指定してWebカメラを起動
         const constraints = {
@@ -47,6 +50,25 @@
                 console.error("カメラのアクセスに失敗しました:", err.name);
             });
 
+        // GPSから現在地を取得する関数
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        currentLocation = { latitude, longitude };
+                        locationOutput.textContent = `現在地：緯度 ${latitude}, 経度 ${longitude}`;
+                    },
+                    (error) => {
+                        console.error("位置情報の取得に失敗しました:", error);
+                        locationOutput.textContent = "現在地：取得に失敗しました";
+                    }
+                );
+            } else {
+                locationOutput.textContent = "現在地：Geolocation APIがサポートされていません";
+            }
+        }
+
         // QRコードをスキャンする関数
         function scanQRCode() {
             requestAnimationFrame(scanQRCode);
@@ -60,10 +82,20 @@
 
             // QRコードが検出された場合はその内容を表示
             if (qrCode) {
-                output.textContent = "QRコードの内容: " + qrCode.data;
-                console.log(qrCode.data);
+                output.textContent = `QRコードの内容: ${qrCode.data}`;
+                if (currentLocation) {
+                    output.textContent += ` (現在地: 緯度 ${currentLocation.latitude}, 経度 ${currentLocation.longitude})`;
+                }
+                console.log("QRコードの内容:", qrCode.data);
+                console.log("現在地:", currentLocation);
             }
         }
+
+        // ページが読み込まれたらカメラとGPSを開始
+        window.onload = () => {
+            getCurrentLocation();  // 位置情報を取得
+            navigator.mediaDevices.getUserMedia(constraints);  // カメラを起動
+        };
     </script>
 </body>
 </html>
