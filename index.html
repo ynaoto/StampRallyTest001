@@ -1,10 +1,28 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<title>Test for the Stamp Rally</title>
+  <meta charset="UTF-8">
+  <title>Test for the Stamp Rally</title>
 </head>
 <body>
-あいうえお
-<script>alert("テスト");</script>
+    <h1>Webカメラの映像を表示</h1>
+    <video id="video" width="640" height="480" autoplay></video>
+    <script>
+        // Webカメラにアクセスするための関数
+        async function startCamera() {
+            try {
+                // ユーザーのカメラ映像にアクセスする
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const videoElement = document.getElementById('video');
+                // カメラ映像を<video>要素にストリームとして渡す
+                videoElement.srcObject = stream;
+            } catch (error) {
+                console.error("カメラのアクセスに失敗しました:", error);
+            }
+        }
+
+        // ページがロードされたらカメラを開始
+        window.onload = startCamera;
+    </script>
 </body>
 </html>
