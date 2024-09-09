@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QRコードリーダーと現在地取得2</title>
+    <title>QRコードリーダーと現在地取得</title>
     <style>
         #video {
             width: 100%;
@@ -15,7 +15,7 @@
     </style>
 </head>
 <body>
-    <h1>WebカメラでQRコードをスキャン & 現在地取得</h1>
+    <h1>WebカメラでQRコードをスキャン & 現在地取得2</h1>
     <video id="video" autoplay playsinline></video>
     <canvas id="canvas" width="640" height="480"></canvas>
     <p id="output">QRコードがここに表示されます</p>
@@ -35,7 +35,7 @@
         // Webカメラを起動して映像を<video>タグに表示
         async function startCamera() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, facingMode: "environment" });
                 video.srcObject = stream;
                 video.play();
                 scanQRCode();
